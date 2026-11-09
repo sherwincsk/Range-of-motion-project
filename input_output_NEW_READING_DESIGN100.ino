@@ -6,7 +6,8 @@
 
 //Create a instance of class LSM6DS3
 LSM6DS3 myIMU(I2C_MODE, 0x6A);    //I2C device address 0x6A
-
+float X;
+float Z;
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
@@ -23,9 +24,9 @@ void loop() {
     //Accelerometer
     Serial.print("\nAccelerometer:\n");
     Serial.print(" X1 = ");
-    Serial.println(myIMU.readFloatAccelX(), 4);
+    X = myIMU.readFloatAccelX(), 4);
     Serial.print(" Z1 = ");
-    Serial.println(myIMU.readFloatAccelZ(), 4);
+    Z = myIMU.readFloatAccelZ(), 4);
 
     //Gyroscope
     Serial.print("\nGyroscope:\n");
