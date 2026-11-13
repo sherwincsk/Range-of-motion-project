@@ -10,7 +10,10 @@ float aX;
 float aZ;
 float gyroX;
 float gyroZ;
-float angle;
+float Xangle;
+float Zangle;
+float old_X;
+float old_Z;
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
@@ -25,14 +28,8 @@ void setup() {
 
 void loop() {
     //Accelerometer
-    Serial.print("\nAccelerometer:\n");
-    Serial.print(" X1 = ");
     aX = myIMU.readFloatAccelX();
-    Serial.print(" Z1 = ");
     aZ = myIMU.readFloatAccelZ();
-    
-    
-
     //Gyroscope
     Serial.print("\nGyroscope:\n");
     Serial.print(" X1 = ");
@@ -40,7 +37,13 @@ void loop() {
     gyroZ = myIMU.readFloatGyroZ();
     Serial.print(" Z1 = ");
     Serial.println(myIMU.readFloatGyroZ(), 4);
-
-    
-
-    delay(10);}
+    Xangle += (old_X + gyroX)/2 * 0.01;
+    old_X= gyroX;
+    Zangle += (old_Z + gyroZ)/2 * 0.01;
+    old_Z= gyroZ;
+    Serial.print("Pitch angle: ");
+    Serial.println(Xangle);
+    Serial.print("Yaw angle: ");
+    Serial.println(Zangle);
+    delay(10);
+}
