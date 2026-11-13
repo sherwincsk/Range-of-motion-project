@@ -1,19 +1,19 @@
-
-
-
 #include "LSM6DS3.h"
 #include "Wire.h"
+#include <cmath>
 
 //Create a instance of class LSM6DS3
 LSM6DS3 myIMU(I2C_MODE, 0x6A);    //I2C device address 0x6A
-float aX;
+float aY;
 float aZ;
-float gyroX;
+float gyroY;
 float gyroZ;
-float Xangle;
+float Yangle;
 float Zangle;
-float old_X;
+float old_Y;
 float old_Z;
+float accelPitch;
+float finalAnswer;
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
@@ -28,22 +28,33 @@ void setup() {
 
 void loop() {
     //Accelerometer
-    aX = myIMU.readFloatAccelX();
+    aY = myIMU.readFloatAccelX();
     aZ = myIMU.readFloatAccelZ();
     //Gyroscope
-    Serial.print("\nGyroscope:\n");
-    Serial.print(" X1 = ");
-    gyroX = myIMU.readFloatGyroX();
+    gyroY = myIMU.readFloatGyroY();
     gyroZ = myIMU.readFloatGyroZ();
-    Serial.print(" Z1 = ");
-    Serial.println(myIMU.readFloatGyroZ(), 4);
-    Xangle += (old_X + gyroX)/2 * 0.01;
-    old_X= gyroX;
-    Zangle += (old_Z + gyroZ)/2 * 0.01;
+    Yangle += (old_Y + gyroY)*0.1/2;
+    old_Y = gyroY;
+    Zangle += (old_Z + gyroZ)*0.01/2;
     old_Z= gyroZ;
-    Serial.print("Pitch angle: ");
-    Serial.println(Xangle);
-    Serial.print("Yaw angle: ");
-    Serial.println(Zangle);
-    delay(10);
+    if(abs(aY)>=1){
+      aY= 0.99999;
+    }
+    accelPitch = (acos(aY)*180/3.141-90);
+    finalAnswer = Yangle*0.20 + accelPitch*0.80;
+    Serial.println(finalAnswer);
+    delay(100);
 }
+
+/*
+float Y = (acos(aY)*180/3.141)-90;
+    if(aY==0){
+      Y=0;
+    }
+    float Y2 = Yangle*0.8 + Y*0.2;
+   if (millis()%20==0){
+        
+    Serial.println(Y2);
+    }
+    float MIL = millis();
+    delay(10-MIL);*/
