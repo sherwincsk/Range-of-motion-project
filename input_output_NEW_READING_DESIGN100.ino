@@ -24,6 +24,7 @@ void setup() {
     } else {
         Serial.println("Device OK!");
     }
+	myIMU.settings.gyroSampleRate = 1000;
 }
 
 void loop() {
@@ -33,17 +34,17 @@ void loop() {
     //Gyroscope
     gyroY = myIMU.readFloatGyroY();
     gyroZ = myIMU.readFloatGyroZ();
-    Yangle += (old_Y + gyroY)*0.1/2;
+    Yangle += (old_Y + gyroY)*0.001/2;
     old_Y = gyroY;
-    Zangle += (old_Z + gyroZ)*0.01/2;
+    Zangle += (old_Z + gyroZ)*0.001/2;
     old_Z= gyroZ;
     if(abs(aY)>=1){
       aY= 0.99999;
     }
     accelPitch = (acos(aY)*180/3.141-90);
     finalAnswer = Yangle*0.20 + accelPitch*0.80;
-    Serial.println(finalAnswer);
-    delay(100);
+    Serial.println(Yangle);
+    delay(1);
 }
 
 /*
