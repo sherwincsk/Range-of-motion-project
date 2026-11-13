@@ -10,6 +10,7 @@ float aX;
 float aZ;
 float gyroX;
 float gyroZ;
+float angle;
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
@@ -36,10 +37,10 @@ void loop() {
     Serial.print("\nGyroscope:\n");
     Serial.print(" X1 = ");
     gyroX = myIMU.readFloatGyroX();
-    gyroZ = myIMU.readFloatGyroZ()
+    gyroZ = myIMU.readFloatGyroZ();
     Serial.print(" Z1 = ");
     Serial.println(myIMU.readFloatGyroZ(), 4);
 
     
 
-    delay(100);}
+    delay(10);}
