@@ -14,6 +14,8 @@ float old_Y;
 float old_Z;
 float accelPitch;
 float finalAnswer;
+float t0 {0};
+float dt;
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
@@ -24,7 +26,6 @@ void setup() {
     } else {
         Serial.println("Device OK!");
     }
-	myIMU.settings.gyroSampleRate = 1000;
 }
 
 void loop() {
@@ -34,17 +35,18 @@ void loop() {
     //Gyroscope
     gyroY = myIMU.readFloatGyroY();
     gyroZ = myIMU.readFloatGyroZ();
-    Yangle += (old_Y + gyroY)*0.001/2;
+	dt = (micros() - t0)/1000000;
+    Yangle += (old_Y + gyroY)*dt/2;
     old_Y = gyroY;
-    Zangle += (old_Z + gyroZ)*0.001/2;
-    old_Z= gyroZ;
+    Zangle += (old_Z + gyroZ)*dt/2;
+	t0 = micros();
+    old_Z = gyroZ;
     if(abs(aY)>=1){
       aY= 0.99999;
     }
     accelPitch = (acos(aY)*180/3.141-90);
     finalAnswer = Yangle*0.20 + accelPitch*0.80;
     Serial.println(Yangle);
-    delay(1);
 }
 
 /*
