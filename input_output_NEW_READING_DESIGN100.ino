@@ -47,8 +47,8 @@ void loop() {
     }
     accel_Yangle = (acos(aY)*180/3.141-90);
     mag_Zangle = atan2(mag_y, mag_x)*180/3.141;
-    final_Yangle = gyro_Yangle*0.80 + accel_Yangle*0.20;
-    final_Zangle = gyro_Zangle*0.80 + mag_Zangle*0.20;
+    final_Yangle = gyro_Yangle*0.98+ accel_Yangle*0.02;
+    final_Zangle = gyro_Zangle*0.98 + mag_Zangle*0.02;
     Serial.println(final_Yangle);
     //Serial.println(final_Zangle);
 }
