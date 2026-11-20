@@ -45,7 +45,7 @@ void loop() {
     if(abs(aY)>=1){
       aY= 0.99999;
     }
-    accelPitch = (acos(aY)*180/3.141-90);
+    accel_Yangle = (acos(aY)*180/3.141-90);
 	mag_Zangle = atan2(mag_y, mag_x)*180/3.141;
     final_Yangle = gyro_Yangle*0.80 + accelPitch*0.20;
 	final_Zangle = gyro_Zangle*0.80 + mag_Zangle*0.20;
