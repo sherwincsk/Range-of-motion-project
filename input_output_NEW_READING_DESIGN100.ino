@@ -8,14 +8,15 @@ float aY;
 float aZ;
 float gyroY;
 float gyroZ;
-float Yangle;
-float Zangle;
+float gyro_Yangle;
+float gyro_Zangle;
 float old_Y;
 float old_Z;
-float accelPitch;
-float finalAnswer;
+float accel_Yangle;
+float final_Yangle, final_Zangle;
 float t0 {0};
 float dt;
+float mag_x, mag_y, mag_z, mag_zangle;
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
@@ -36,17 +37,19 @@ void loop() {
     gyroY = myIMU.readFloatGyroY();
     gyroZ = myIMU.readFloatGyroZ();
 	dt = (micros() - t0)/1000000;
-    Yangle += (old_Y + gyroY)*dt/2;
+    gyro_Yangle += (old_Y + gyroY)*dt/2;
     old_Y = gyroY;
-    Zangle += (old_Z + gyroZ)*dt/2;
+    gyro_Zangle += (old_Z + gyroZ)*dt/2;
 	t0 = micros();
     old_Z = gyroZ;
     if(abs(aY)>=1){
       aY= 0.99999;
     }
     accelPitch = (acos(aY)*180/3.141-90);
-    finalAnswer = Yangle*0.20 + accelPitch*0.80;
-    Serial.println(Yangle);
+	mag_Zangle = atan2(mag_y, mag_x)*180/3.141;
+    final_Yangle = gyro_Yangle*0.80 + accelPitch*0.20;
+	final_Zangle = gyro_Zangle*0.80 + mag_Zangle*0.20;
+    Serial.println(final_Yangle);
 }
 
 /*
