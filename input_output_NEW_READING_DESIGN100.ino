@@ -16,7 +16,7 @@ float accel_Yangle;
 float final_Yangle, final_Zangle;
 float t0 {0};
 float dt;
-float mag_x, mag_y, mag_z, mag_zangle;
+float mag_x, mag_y, mag_z, mag_Zangle;
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
@@ -31,26 +31,26 @@ void setup() {
 
 void loop() {
     //Accelerometer
-    aY = myIMU.readFloatAccelX();
+    aY = myIMU.readFloatAccelY();
     aZ = myIMU.readFloatAccelZ();
     //Gyroscope
-    gyroY = myIMU.readFloatGyroY();
+    gyroY = myIMU.readFloatGyroY() + 1.9;
     gyroZ = myIMU.readFloatGyroZ();
-	dt = (micros() - t0)/1000000;
-    gyro_Yangle += (old_Y + gyroY)*dt/2;
+    dt = (micros() - t0)/1000000;
+    gyro_Yangle += (old_Y + gyroY)*dt/2 ;
     old_Y = gyroY;
     gyro_Zangle += (old_Z + gyroZ)*dt/2;
-	t0 = micros();
+    t0 = micros();
     old_Z = gyroZ;
     if(abs(aY)>=1){
       aY= 0.99999;
     }
     accel_Yangle = (acos(aY)*180/3.141-90);
-	mag_Zangle = atan2(mag_y, mag_x)*180/3.141;
-    final_Yangle = gyro_Yangle*0.80 + accelPitch*0.20;
-	final_Zangle = gyro_Zangle*0.80 + mag_Zangle*0.20;
+    mag_Zangle = atan2(mag_y, mag_x)*180/3.141;
+    final_Yangle = gyro_Yangle*0.80 + accel_Yangle*0.20;
+    final_Zangle = gyro_Zangle*0.80 + mag_Zangle*0.20;
     Serial.println(final_Yangle);
-	Serial.println(final_Zangle);
+    //Serial.println(final_Zangle);
 }
 
 /*
