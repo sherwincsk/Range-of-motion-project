@@ -15,7 +15,7 @@ float old_Z;
 float accel_Yangle;
 float final_Yangle, final_Zangle;
 float t0 {0};
-int dt;
+float dt;
 float mag_x, mag_y, mag_z, mag_Zangle;
 void setup() {
     // put your setup code here, to run once:
