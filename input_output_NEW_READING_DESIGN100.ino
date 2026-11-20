@@ -50,6 +50,7 @@ void loop() {
     final_Yangle = gyro_Yangle*0.80 + accelPitch*0.20;
 	final_Zangle = gyro_Zangle*0.80 + mag_Zangle*0.20;
     Serial.println(final_Yangle);
+	Serial.println(final_Zangle);
 }
 
 /*
