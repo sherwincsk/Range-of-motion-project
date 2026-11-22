@@ -57,7 +57,7 @@ void loop() {
     //Magnotometer
 
     // calc angle for final y angle
-    finalAnswer = (0.98*(finalAnswer + gyroY *dt) + 0.02*accelPitch);
+    finalAnswer = abs(0.98*(finalAnswer + gyroY *dt) + 0.02*accelPitch);
 
     
     if (finalAnswer > highYAngle){
