@@ -4,8 +4,7 @@
 
 //Create a instance of class LSM6DS3
 LSM6DS3 myIMU(I2C_MODE, 0x6A);    //I2C device address 0x6A
-float aY;
-float aZ;
+float aX, aY, aZ;
 float gyroY;
 float gyroZ;
 float Yangle;
@@ -38,7 +37,8 @@ void loop() {
     //unsigned long t0 = micros();
 // ... one full loop iteration ...
     //Accelerometer
-    aY = myIMU.readFloatAccelX();
+    aX = myIMU.readFloatAccelX();
+    aY = myIMU.readFloatAccelY();
     aZ = myIMU.readFloatAccelZ();
     //to make arc cos get 90 degrees instead of nan 
     if(aY>=1){
@@ -48,7 +48,7 @@ void loop() {
       aY= -0.99999;
     }
     //accelerometer angle
-    accelPitch = (acos(aY/-1)*180/3.141-90);
+    accelPitch = atan2(aX, aZ) * 180.0 / 3.141;
 
     //Gyroscope
     gyroY = myIMU.readFloatGyroY();
@@ -73,4 +73,6 @@ void loop() {
     //Serial.println("total");
     //Serial.println(totalYAngle);
 }
+
+
 
