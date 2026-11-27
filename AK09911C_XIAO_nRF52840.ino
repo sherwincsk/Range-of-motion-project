@@ -314,9 +314,9 @@ void printReading(const MagReading &m, float start_X, float start_Y) {
   }
   float total = sqrtf(m.uT[0] * m.uT[0] + m.uT[1] * m.uT[1] + m.uT[2] * m.uT[2]);
   Serial.print("X_uT:");
-  Serial.print(m.uT[0]-start_X, 2);
+  Serial.print(m.uT[0], 2);
   Serial.print(",Y_uT:");
-  Serial.print(m.uT[1]-start_Y, 2);
+  Serial.print(m.uT[1], 2);
   Serial.print(",Z_uT:");
   Serial.print(m.uT[2], 2);
   Serial.print(",Total_uT:");
