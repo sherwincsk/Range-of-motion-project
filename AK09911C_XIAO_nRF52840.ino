@@ -64,6 +64,7 @@ const uint8_t AK_MODE_CONT_100HZ = 0x08;
 const uint8_t AK_MODE_SELF_TEST  = 0x10;
 const uint8_t AK_MODE_FUSE_ROM   = 0x1F;
 
+
 const float AK_UT_PER_LSB = 0.6f;   // 0.6 uT per count (after the factory trim)
 
 // One measurement from the sensor
@@ -81,6 +82,8 @@ bool     sensorReady  = false;
 uint32_t lastDataMs   = 0;   // when we last got a sample
 uint32_t lastPollMs   = 0;   // when we last asked the sensor for new data
 uint32_t lastRetryMs  = 0;   // when we last tried to find the sensor
+float start_X, start_Y;
+bool calibrated = false;
 
 // ============================ Low-level I2C ================================
 // Write one register. Returns true if the sensor acknowledged.
@@ -300,25 +303,29 @@ bool readMagnetometer(MagReading &r) {
   return readSample(r);
 }
 
-void printReading(const MagReading &m) {
+void calibration (const MagReading m){
+  start_X = m.uT[0];
+  start_Y = m.uT[1];
+}
+void printReading(const MagReading &m, float start_X, float start_Y) {
   if (m.overflow) {
     Serial.println("Magnetic overflow (strong magnet nearby?) - sample skipped");
     return;
   }
   float total = sqrtf(m.uT[0] * m.uT[0] + m.uT[1] * m.uT[1] + m.uT[2] * m.uT[2]);
   Serial.print("X_uT:");
-  Serial.print(m.uT[0], 2);
+  Serial.print(m.uT[0]-start_X, 2);
   Serial.print(",Y_uT:");
-  Serial.print(m.uT[1], 2);
+  Serial.print(m.uT[1]-start_Y, 2);
   Serial.print(",Z_uT:");
   Serial.print(m.uT[2], 2);
   Serial.print(",Total_uT:");
   Serial.print(total, 2);
   if (PRINT_RAW) {
     Serial.print(",X_raw:");
-    Serial.print(m.raw[0]);
+    Serial.print(m.raw[0]-start_X);
     Serial.print(",Y_raw:");
-    Serial.print(m.raw[1]);
+    Serial.print(m.raw[1]-start_Y);
     Serial.print(",Z_raw:");
     Serial.print(m.raw[2]);
   }
@@ -357,6 +364,7 @@ void setup() {
     printTroubleshooting();
   }
   lastRetryMs = millis();
+  
 }
 
 void loop() {
@@ -382,7 +390,16 @@ void loop() {
   MagReading m;
   if (readMagnetometer(m)) {
     lastDataMs = now;
-    printReading(m);
+
+    if (!calibrated && !m.overflow) {
+        calibration(m);
+        calibrated = true;
+        Serial.println("Calibration complete!");
+    }
+
+    if (calibrated) {
+        printReading(m, start_X, start_Y);
+    }
   } else if (now - lastDataMs > 1000) {
     Serial.println("No data from the AK09911C for 1 s - re-initialising...");
     sensorReady = false;
