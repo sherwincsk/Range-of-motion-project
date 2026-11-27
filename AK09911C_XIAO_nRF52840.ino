@@ -390,19 +390,19 @@ void loop() {
   MagReading m;
   if (readMagnetometer(m)) {
     lastDataMs = now;
-
-    if (!calibrated && !m.overflow) {
-        calibration(m);
-        calibrated = true;
-        Serial.println("Calibration complete!");
-    }
-
-    if (calibrated) {
-        printReading(m, start_X, start_Y);
-    }
+    printReading(m, start_X, start_Y);
+    
   } else if (now - lastDataMs > 1000) {
     Serial.println("No data from the AK09911C for 1 s - re-initialising...");
     sensorReady = false;
     lastRetryMs = now - 2000;  // retry straight away
   }
 }
+
+/*    if (!calibrated && !m.overflow) {
+        calibration(m);
+        calibrated = true;
+        Serial.println("Calibration complete!");
+    }
+
+    if (calibrated) { */
